@@ -223,7 +223,7 @@ const Home: NextPage = () => {
         <h1 className="text-5xl font-extrabold">My Awesome Blog</h1>
 
         {session?.user ? (
-          // welcome & blog posts
+          // welcome & blog posts ss
           <div className="flex flex-col">
             <Welcome user={session.user} />
             <section className="mt-10">
