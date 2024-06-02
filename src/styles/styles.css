@@ -1,0 +1,70 @@
+/* styles.css */
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .main-container {
+    padding: 20px;
+    background-color: #ffffff10;
+    border-radius: 10px;
+    border: 1px solid #ffffff30;
+  }
+  
+  .post-list {
+    margin-top: 20px;
+  }
+  
+  .post-item {
+    padding: 10px;
+    background-color: #ffffff10;
+    border-radius: 8px;
+    border: 1px solid #ffffff30;
+    transition: background-color 0.3s ease;
+  }
+  
+  .post-item:hover {
+    background-color: #ffffff20;
+  }
+  
+  .post-header {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  .post-author {
+    font-size: 1rem;
+    color: #000000;
+  }
+  
+  .post-actions button {
+    background: none;
+    border: none;
+    color: #ff4081;
+    cursor: pointer;
+    font-size: 1rem;
+    text-decoration: underline;
+    margin-left: 10px;
+  }
+  
+  .post-actions button:hover {
+    color: #ff80ab;
+  }
+  
+  .signin-signup a {
+    background-color: #ffffff10;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    color: #ffffff;
+    transition: background-color 0.3s ease;
+  }
+  
+  .signin-signup a:hover {
+    background-color: #ffffff20;
+  }
+  
+  .modal-form {
+    max-width: 600px;
+  }
+  
