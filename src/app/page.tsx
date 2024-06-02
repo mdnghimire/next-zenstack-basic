@@ -12,11 +12,23 @@ import {
   useDeletePost,
 } from "../lib/hooks";
 
-import { Button, Modal, Form, Input, Space, Skeleton } from "antd";
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
+import {
+  Button,
+  Modal,
+  Form,
+  Input,
+  Space,
+  Skeleton,
+  Card,
+  ButtonProps,
+} from "antd";
 import { LogoutOutlined, PlusOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import prismaErrorHandler from "utilities/prisma-error-handler";
 import { toast } from "react-toastify";
+import "../styles/styles.css";
+import ConfirmationButton from "~/components/confirmation-button";
 
 const layout = {
   labelCol: { span: 8 },
@@ -52,7 +64,7 @@ const Welcome = ({ user }: { user: AuthUser }) => {
 
 const SigninSignup = () => {
   return (
-    <div className="flex gap-4 text-2xl">
+    <div className="signin-signup flex gap-4 text-2xl">
       <Link href="/signin" className="rounded-lg border px-4 py-2">
         Signin
       </Link>
@@ -130,16 +142,29 @@ const Posts = ({ user }: { user: AuthUser }) => {
     });
   }
 
-  async function onDelete(post: Post) {
+  const handleConfirm = async (post: Post) => {
     await deletePost({ where: { id: post.id } });
-  }
+    toast.success("Post deleted successfully");
+  };
+
+  const confirmButton: ButtonProps = {
+    children: "Delete",
+  };
+
+  const yesButton: ButtonProps = {
+    children: "Yes",
+    type: "primary",
+  };
+
+  const noButton: ButtonProps = {
+    children: "No",
+  };
 
   return (
     <div className="container flex flex-col text-white">
       <Button
         type="primary"
         icon={<PlusOutlined />}
-        // onClick={() => void onCreatePost()}
         onClick={() => showModal()}
       >
         Create Post
@@ -157,7 +182,7 @@ const Posts = ({ user }: { user: AuthUser }) => {
           form={form}
           name="control-hooks"
           onFinish={onFinish}
-          style={{ maxWidth: 600 }}
+          className="modal-form"
         >
           <Form.Item name="name" label="Name" rules={[{ required: true }]}>
             <Input />
@@ -187,27 +212,50 @@ const Posts = ({ user }: { user: AuthUser }) => {
         </Form>
       </Modal>
 
-      <ul className="container mt-8 flex flex-col gap-2">
+      <div className="post-list container mt-8 flex flex-col gap-4">
         {posts?.map((post) => (
-          <li key={post.id} className="flex items-end justify-between gap-4">
-            <p className={`text-2xl ${!post.published ? "text-gray-400" : ""}`}>
-              {post.name}
-              <span className="text-lg"> by {post.createdBy.email}</span>
+          <Card
+            key={post.id}
+            // className="post-item"
+            title={post.name}
+            extra={
+              <div className="post-actions flex gap-2">
+                <Button
+                  type="link"
+                  ghost
+                  onClick={() => void onTogglePublished(post)}
+                >
+                  {post.published ? "Unpublish" : "Publish"}
+                </Button>
+                {/* <Button
+                  onClick={() => void onDelete(post)}
+                  type="primary"
+                  ghost
+                  danger
+                  icon={<DeleteOutlined />}
+                >
+                  Delete
+                </Button> */}
+                <ConfirmationButton
+                  title="Delete Confirmation"
+                  bodyText="Are you sure you want to delete this item?"
+                  onConfirm={() => handleConfirm(post)}
+                  confirmButton={confirmButton}
+                  yesButton={yesButton}
+                  noButton={noButton}
+                />
+              </div>
+            }
+          >
+            <p className="post-author text-lg text-black">
+              by {post.createdBy.email}
             </p>
-            <div className="flex w-32 justify-end gap-1 text-left">
-              <button
-                className="underline"
-                onClick={() => void onTogglePublished(post)}
-              >
-                {post.published ? "Unpublish" : "Publish"}
-              </button>
-              <button className="underline" onClick={() => void onDelete(post)}>
-                Delete
-              </button>
-            </div>
-          </li>
+            <p className="post-content font-medium text-black">
+              {post.content}
+            </p>
+          </Card>
         ))}
-      </ul>
+      </div>
     </div>
   );
 };
@@ -218,12 +266,12 @@ const Home: NextPage = () => {
   if (status === "loading") return <Skeleton avatar paragraph={{ rows: 4 }} />;
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
+    <main className="main-container flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
       <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 text-white">
         <h1 className="text-5xl font-extrabold">My Awesome Blog</h1>
 
         {session?.user ? (
-          // welcome & blog posts
+          // welcome & blog posts ss
           <div className="flex flex-col">
             <Welcome user={session.user} />
             <section className="mt-10">
