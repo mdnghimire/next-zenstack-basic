@@ -3,68 +3,97 @@
 import type { NextPage } from "next";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useState, type FormEvent } from "react";
+import { useState } from "react";
+import { toast } from "react-toastify";
+import { Form, Input, Button, Typography, Card } from "antd";
+import { UserOutlined, LockOutlined } from "@ant-design/icons";
+import { Footer } from "antd/es/layout/layout";
 
-const Signin: NextPage = () => {
+const { Title, Link } = Typography;
+
+const Login: NextPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
 
-  async function onSignin(e: FormEvent) {
-    e.preventDefault();
-
+  async function onSignin(values: { email: string; password: string }) {
     const result = await signIn("credentials", {
       redirect: false,
-      email,
-      password,
+      email: values.email,
+      password: values.password,
     });
 
     if (result?.ok) {
       router.push("/");
     } else {
-      alert("Signin failed");
+      toast.error("Invalid credentials");
     }
   }
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
-      <h1 className="text-5xl font-extrabold text-white">Login</h1>
-      <form
-        className="mt-16 flex flex-col gap-8 text-2xl"
-        onSubmit={(e) => void onSignin(e)}
+      <Card
+        style={{
+          width: 400,
+          padding: 24,
+          borderRadius: 8,
+          boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+        }}
       >
-        <div>
-          <label htmlFor="email" className="inline-block w-32  text-white">
-            Email
-          </label>
-          <input
-            id="email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.currentTarget.value)}
-            className="ml-4 w-72 rounded border p-2"
-          />
-        </div>
-        <div>
-          <label htmlFor="password" className="inline-block w-32  text-white">
-            Password
-          </label>
-          <input
-            id="password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.currentTarget.value)}
-            className="ml-4 w-72 rounded border p-2"
-          />
-        </div>
-        <input
-          type="submit"
-          value="Sign me in"
-          className="cursor-pointer rounded border border-gray-500 py-4 text-white"
-        />
-      </form>
+        <Title level={2} style={{ textAlign: "center", marginBottom: 24 }}>
+          Login Page
+        </Title>
+        <Form name="login" onFinish={onSignin} layout="vertical">
+          <Form.Item
+            name="email"
+            rules={[{ required: true, message: "Please input your email!" }]}
+          >
+            <Input
+              prefix={<UserOutlined />}
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.currentTarget.value)}
+              style={{ borderRadius: 8 }}
+            />
+          </Form.Item>
+          <Form.Item
+            name="password"
+            rules={[{ required: true, message: "Please input your password!" }]}
+          >
+            <Input.Password
+              prefix={<LockOutlined />}
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.currentTarget.value)}
+              style={{ borderRadius: 8 }}
+            />
+          </Form.Item>
+          <Form.Item>
+            <Button
+              type="primary"
+              htmlType="submit"
+              style={{ width: "100%", borderRadius: 8 }}
+            >
+              Sign me in
+            </Button>
+          </Form.Item>
+        </Form>
+        <Footer>
+          <Link
+            href="/signup"
+            style={{
+              display: "block",
+              textAlign: "center",
+              marginTop: 16,
+              color: "#000",
+            }}
+          >
+            <p className="text-black">Don&apos;t have an account? Sign Up</p>
+          </Link>
+        </Footer>
+      </Card>
     </div>
   );
 };
 
-export default Signin;
+export default Login;

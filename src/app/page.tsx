@@ -29,6 +29,7 @@ import prismaErrorHandler from "utilities/prisma-error-handler";
 import { toast } from "react-toastify";
 import "../styles/styles.css";
 import ConfirmationButton from "~/components/confirmation-button";
+import TextArea from "antd/es/input/TextArea";
 
 const layout = {
   labelCol: { span: 8 },
@@ -196,7 +197,7 @@ const Posts = ({ user }: { user: AuthUser }) => {
             label="Content"
             rules={[{ required: true }]}
           >
-            <Input />
+            <TextArea rows={6} />
           </Form.Item>
 
           <Form.Item {...tailLayout}>
@@ -227,15 +228,6 @@ const Posts = ({ user }: { user: AuthUser }) => {
                 >
                   {post.published ? "Unpublish" : "Publish"}
                 </Button>
-                {/* <Button
-                  onClick={() => void onDelete(post)}
-                  type="primary"
-                  ghost
-                  danger
-                  icon={<DeleteOutlined />}
-                >
-                  Delete
-                </Button> */}
                 <ConfirmationButton
                   title="Delete Confirmation"
                   bodyText="Are you sure you want to delete this item?"
