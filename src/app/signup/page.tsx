@@ -1,13 +1,22 @@
 "use client";
 
 import type { NextPage } from "next";
-import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useState, type FormEvent } from "react";
+import { useState } from "react";
 import { toast } from "react-toastify";
 import { useCreateUser } from "~/lib/hooks";
-
 import prismaErrorHandler from "../../../utilities/prisma-error-handler";
+
+import { Form, Input, Button, Typography, Card } from "antd";
+import {
+  UserOutlined,
+  LockOutlined,
+  MailOutlined,
+  PhoneOutlined,
+} from "@ant-design/icons";
+import { Footer } from "antd/es/layout/layout";
+
+const { Title, Link } = Typography;
 
 const Signup: NextPage = () => {
   const [email, setEmail] = useState("");
@@ -18,108 +27,126 @@ const Signup: NextPage = () => {
   const { mutateAsync: signup } = useCreateUser();
   const router = useRouter();
 
-  async function onSignup(e: FormEvent) {
-    e.preventDefault();
+  async function onSignup(values: {
+    email: string;
+    password: string;
+    username: string;
+    phone: string;
+  }) {
     try {
-      await signup({ data: { email, password, username, phone } });
-
+      await signup({
+        data: {
+          email: values.email,
+          password: values.password,
+          username: values.username,
+          phone: values.phone,
+        },
+      });
       toast.success("User added successfully");
-
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (err: any) {
+      router.push("/signin");
+    } catch (err) {
       prismaErrorHandler(err);
-
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      if (err.info?.prisma && err.info?.code === "P2002") {
-        // P2002 is Prisma's error code for unique constraint violations
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
-        toast.error(err.info?.prisma);
-        // toast.error("user already exists");
-        // alert("User already exists");
-      } else {
-        alert("An unknown error occurred");
-      }
-      return;
+      toast.error("An error occurred while creating the user");
     }
-
-    // signin to create a session
-    await signIn("credentials", { redirect: false, email, password });
-    router.push("/");
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-sky-400 to-blue-800 p-6">
-      <form
-        className="mt-8 flex flex-col gap-6 rounded-lg border border-gray-300 bg-white p-8 shadow-lg"
-        onSubmit={(e) => void onSignup(e)}
+    <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
+      <Card
+        style={{
+          width: 400,
+          padding: 24,
+          borderRadius: 8,
+          boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+        }}
       >
-        <h1 className="mb-8 text-center text-5xl font-extrabold text-black">
-          Sign up
-        </h1>
-
-        <div>
-          <label htmlFor="email" className="inline-block w-32 text-gray-700">
-            Username
-          </label>
-          <input
-            id="username"
-            type="text"
-            required
-            value={username}
-            onChange={(e) => setUsername(e.currentTarget.value)}
-            className="ml-4 w-72 rounded border border-gray-300 p-2 focus:border-blue-500 focus:ring focus:ring-blue-200"
-          />
-        </div>
-
-        <div>
-          <label htmlFor="email" className="inline-block w-32 text-gray-700">
-            Phone
-          </label>
-          <input
-            id="phone"
-            type="text"
-            required
-            value={phone}
-            onChange={(e) => setPhone(e.currentTarget.value)}
-            className="ml-4 w-72 rounded border border-gray-300 p-2 focus:border-blue-500 focus:ring focus:ring-blue-200"
-          />
-        </div>
-
-        <div>
-          <label htmlFor="email" className="inline-block w-32 text-gray-700">
-            Email
-          </label>
-          <input
-            id="email"
-            type="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.currentTarget.value)}
-            className="ml-4 w-72 rounded border border-gray-300 p-2 focus:border-blue-500 focus:ring focus:ring-blue-200"
-          />
-        </div>
-        <div>
-          <label htmlFor="password" className="inline-block w-32 text-gray-700">
-            Password
-          </label>
-          <input
-            id="password"
-            type="password"
-            required
-            value={password}
-            onChange={(e) => setPassword(e.currentTarget.value)}
-            className="ml-4 w-72 rounded border border-gray-300 p-2 focus:border-blue-500 focus:ring focus:ring-blue-200"
-          />
-        </div>
-        <div className="flex justify-end">
-          <button
-            type="submit"
-            className="w-72 cursor-pointer rounded bg-blue-500 py-2 text-white transition-colors duration-200 hover:bg-blue-600"
+        <Title level={2} style={{ textAlign: "center", marginBottom: 24 }}>
+          Sign Up
+        </Title>
+        <Form name="signup" onFinish={onSignup} layout="vertical">
+          <Form.Item
+            name="username"
+            rules={[{ required: true, message: "Please input your username!" }]}
           >
-            Create account
-          </button>
-        </div>
-      </form>
+            <Input
+              prefix={<UserOutlined />}
+              placeholder="Username"
+              value={username}
+              onChange={(e) => setUsername(e.currentTarget.value)}
+              style={{ borderRadius: 8 }}
+            />
+          </Form.Item>
+          <Form.Item
+            name="phone"
+            rules={[
+              { required: true, message: "Please input your phone number!" },
+            ]}
+          >
+            <Input
+              prefix={<PhoneOutlined />}
+              placeholder="Phone Number"
+              value={phone}
+              onChange={(e) => setPhone(e.currentTarget.value)}
+              style={{ borderRadius: 8 }}
+            />
+          </Form.Item>
+          <Form.Item
+            name="email"
+            rules={[
+              {
+                required: true,
+                message: "Please input your email!",
+              },
+              {
+                type: "email",
+                message: "The input is not a valid email!",
+              },
+            ]}
+          >
+            <Input
+              prefix={<MailOutlined />}
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.currentTarget.value)}
+              style={{ borderRadius: 8 }}
+            />
+          </Form.Item>
+          <Form.Item
+            name="password"
+            rules={[{ required: true, message: "Please input your password!" }]}
+          >
+            <Input.Password
+              prefix={<LockOutlined />}
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.currentTarget.value)}
+              style={{ borderRadius: 8 }}
+            />
+          </Form.Item>
+          <Form.Item>
+            <Button
+              type="primary"
+              htmlType="submit"
+              style={{ width: "100%", borderRadius: 8 }}
+            >
+              Sign Up
+            </Button>
+          </Form.Item>
+        </Form>
+        <Footer>
+          <Link
+            href="/signin"
+            style={{
+              display: "block",
+              textAlign: "center",
+              marginTop: 16,
+              color: "#000",
+            }}
+          >
+            <p className="text-black-600">Already have an account? Log In</p>
+          </Link>
+        </Footer>
+      </Card>
     </div>
   );
 };

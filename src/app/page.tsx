@@ -134,13 +134,15 @@ const Posts = ({ user }: { user: AuthUser }) => {
     }
   };
 
-  // async function onCreatePost() {}
-
   async function onTogglePublished(post: Post) {
-    await updatePost({
-      where: { id: post.id },
-      data: { published: !post.published },
-    });
+    try {
+      await updatePost({
+        where: { id: post.id },
+        data: { published: !post.published },
+      });
+    } catch (error) {
+      prismaErrorHandler(error);
+    }
   }
 
   const handleConfirm = async (post: Post) => {

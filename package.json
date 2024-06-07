@@ -30,6 +30,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-toastify": "^10.0.5",
+    "styled-components": "^6.1.11",
     "zod": "^3.22.4"
   },
   "devDependencies": {
