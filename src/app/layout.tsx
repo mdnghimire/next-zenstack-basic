@@ -1,6 +1,7 @@
 "use client";
 
 import "~/styles/globals.css";
+import "antd/dist/reset.css"; // Reset Ant Design styles
 
 import { Inter } from "next/font/google";
 import Providers from "./providers";

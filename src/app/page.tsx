@@ -23,13 +23,14 @@ import {
   Card,
   ButtonProps,
 } from "antd";
-import { LogoutOutlined, PlusOutlined } from "@ant-design/icons";
+import { LogoutOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import prismaErrorHandler from "utilities/prisma-error-handler";
 import { toast } from "react-toastify";
 import "../styles/styles.css";
 import ConfirmationButton from "~/components/confirmation-button";
 import TextArea from "antd/es/input/TextArea";
+import Title from "antd/es/typography/Title";
 
 const layout = {
   labelCol: { span: 8 },
@@ -165,11 +166,7 @@ const Posts = ({ user }: { user: AuthUser }) => {
 
   return (
     <div className="container flex flex-col text-white">
-      <Button
-        type="primary"
-        icon={<PlusOutlined />}
-        onClick={() => showModal()}
-      >
+      <Button type="primary" onClick={() => showModal()}>
         Create Post
       </Button>
 
@@ -260,22 +257,30 @@ const Home: NextPage = () => {
   if (status === "loading") return <Skeleton avatar paragraph={{ rows: 4 }} />;
 
   return (
-    <main className="main-container flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
-      <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 text-white">
-        <h1 className="text-5xl font-extrabold">My Awesome Blog</h1>
+    <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
+      <div className="rounded-lg border-2 border-white bg-white bg-opacity-10 p-10 shadow-lg">
+        <div className="flex flex-col items-center justify-center gap-12 px-4 py-16 text-white">
+          <Title
+            level={1}
+            className="text-center text-5xl font-extrabold text-white"
+            style={{ color: "white" }}
+          >
+            My Awesome Blog
+          </Title>
 
-        {session?.user ? (
-          // welcome & blog posts ss
-          <div className="flex flex-col">
-            <Welcome user={session.user} />
-            <section className="mt-10">
-              <Posts user={session.user} />
-            </section>
-          </div>
-        ) : (
-          // if not logged in
-          <SigninSignup />
-        )}
+          {session?.user ? (
+            // Welcome & blog posts
+            <div className="flex flex-col items-center">
+              <Welcome user={session.user} />
+              <section className="mt-10">
+                <Posts user={session.user} />
+              </section>
+            </div>
+          ) : (
+            // If not logged in
+            <SigninSignup />
+          )}
+        </div>
       </div>
     </main>
   );
