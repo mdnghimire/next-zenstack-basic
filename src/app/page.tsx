@@ -38,7 +38,7 @@ const layout = {
 };
 
 const tailLayout = {
-  wrapperCol: { offset: 8, span: 16 },
+  wrapperCol: { offset: 12, span: 8 },
 };
 
 type AuthUser = { id: string; email?: string | null };
@@ -176,6 +176,7 @@ const Posts = ({ user }: { user: AuthUser }) => {
         open={isModalOpen}
         onOk={handleOk}
         onCancel={handleCancel}
+        maskClosable={false}
       >
         <Form
           {...layout}
@@ -200,12 +201,15 @@ const Posts = ({ user }: { user: AuthUser }) => {
           </Form.Item>
 
           <Form.Item {...tailLayout}>
-            <Space className="flex justify-between">
+            <Space className="float-end flex justify-between">
               <Button type="primary" htmlType="submit">
                 Submit
               </Button>
               <Button htmlType="button" onClick={onReset}>
                 Reset
+              </Button>
+              <Button htmlType="button" onClick={() => setIsModalOpen(false)}>
+                Cancel
               </Button>
             </Space>
           </Form.Item>
